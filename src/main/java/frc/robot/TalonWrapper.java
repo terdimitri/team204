@@ -11,7 +11,12 @@ public class TalonWrapper implements SpeedController {
     boolean isInverted;
     boolean enabled = true;
 
-    @Override
+    public TalonWrapper(TalonSRX talonSRX) {
+        talon = talonSRX;
+        isInverted = false;
+	}
+
+	@Override
     public void pidWrite(double output) {
         set(output);
     }

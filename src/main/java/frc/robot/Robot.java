@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Talon;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -36,15 +35,15 @@ public class Robot extends TimedRobot {
   private static final Encoder e_back_left   = new Encoder(4, 5);
   private static final Encoder e_back_right  = new Encoder(6, 7);
 
-  private static final TalonSRX m_front_left  = new TalonSRX(11);
-  private static final TalonSRX m_front_right = new TalonSRX(12);
-  private static final TalonSRX m_back_left   = new TalonSRX(13);
-  private static final TalonSRX m_back_right  = new TalonSRX(14);
+  private static final TalonWrapper m_front_left  = new TalonWrapper(new TalonSRX(11));
+  private static final TalonWrapper m_front_right = new TalonWrapper(new TalonSRX(12));
+  private static final TalonWrapper m_back_left   = new TalonWrapper(new TalonSRX(13));
+  private static final TalonWrapper m_back_right  = new TalonWrapper(new TalonSRX(14));
 
-  private static final TalonSRX t_front_left  = new TalonSRX(21);
-  private static final TalonSRX t_front_right = new TalonSRX(22);
-  private static final TalonSRX t_back_left   = new TalonSRX(23);
-  private static final TalonSRX t_back_right  = new TalonSRX(24);
+  private static final TalonWrapper t_front_left  = new TalonWrapper(new TalonSRX(21));
+  private static final TalonWrapper t_front_right = new TalonWrapper(new TalonSRX(22));
+  private static final TalonWrapper t_back_left   = new TalonWrapper(new TalonSRX(23));
+  private static final TalonWrapper t_back_right  = new TalonWrapper(new TalonSRX(24));
 
   SwerveDrive drive = new SwerveDrive(
       new SwerveController(m_front_left, t_front_left, e_front_left, 420),
