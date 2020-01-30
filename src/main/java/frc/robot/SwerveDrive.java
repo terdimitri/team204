@@ -98,8 +98,10 @@ public class SwerveDrive extends RobotDriveBase {
         backRight.setSpeed(speedbl);
         backLeft.setSpeed(speedbr);
 
-
-
+        frontLeft.setTurnTo(1.0, anglefl);
+        frontRight.setTurnTo(1.0, anglefr);
+        backRight.setTurnTo(1.0, anglebl);
+        backLeft.setTurnTo(1.0, anglebr);
     }
 
     @Override

@@ -33,6 +33,26 @@ class SwerveController {
         turningMotor.set(speed);
     }
 
+    void setTurnTo(double speed, int target) {
+        speed = Math.abs(speed);
+        setTurn(speed * towards(encoder.get(), target, false));
+    }
+
+    void setTurnTo(double speed, double angle) {
+        setTurnTo(speed, nearestTurn(angle));
+    }
+
+    static double towards(int source, int target, boolean inverted) {
+        if (source == target) return 0.0;
+        boolean out;
+        if (source < target) out = true;
+        else out = false;
+        if (inverted) out = !out;
+
+        if (out) return 1.0;
+        return -1.0;
+    }
+
     void stopMotor() {
         driveMotor.set(0.0);
         driveMotor.set(0.0);

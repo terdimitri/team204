@@ -13,7 +13,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Encoder;
@@ -53,7 +54,7 @@ public class Robot extends TimedRobot {
   // Control
   private static final XboxController controller = new XboxController(0);
 
-  SwerveDrive drive = new SwerveDrive(
+  private static final SwerveDrive drive = new SwerveDrive(
       new SwerveController(m_front_left, t_front_left, e_front_left, 420),
       new SwerveController(m_front_right, t_front_right, e_front_right, 420),
       new SwerveController(m_back_left, t_back_left, e_back_left, 420),
@@ -122,6 +123,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    drive.set(-controller.getY(Hand.kLeft), controller.getX(Hand.kLeft), controller.getX(Hand.kRight));
   }
 
   /**
