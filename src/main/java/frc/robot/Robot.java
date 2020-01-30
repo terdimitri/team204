@@ -14,7 +14,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.Encoder;
+
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -35,15 +39,19 @@ public class Robot extends TimedRobot {
   private static final Encoder e_back_left   = new Encoder(4, 5);
   private static final Encoder e_back_right  = new Encoder(6, 7);
 
-  private static final TalonWrapper m_front_left  = new TalonWrapper(new TalonSRX(11));
-  private static final TalonWrapper m_front_right = new TalonWrapper(new TalonSRX(12));
-  private static final TalonWrapper m_back_left   = new TalonWrapper(new TalonSRX(13));
-  private static final TalonWrapper m_back_right  = new TalonWrapper(new TalonSRX(14));
+  private static final WPI_TalonSRX m_front_left  = new WPI_TalonSRX(11);
+  private static final WPI_TalonSRX m_front_right = new WPI_TalonSRX(12);
+  private static final WPI_TalonSRX m_back_left   = new WPI_TalonSRX(13);
+  private static final WPI_TalonSRX m_back_right  = new WPI_TalonSRX(14);
 
-  private static final TalonWrapper t_front_left  = new TalonWrapper(new TalonSRX(21));
-  private static final TalonWrapper t_front_right = new TalonWrapper(new TalonSRX(22));
-  private static final TalonWrapper t_back_left   = new TalonWrapper(new TalonSRX(23));
-  private static final TalonWrapper t_back_right  = new TalonWrapper(new TalonSRX(24));
+  private static final WPI_TalonSRX t_front_left  = new WPI_TalonSRX(21);
+  private static final WPI_TalonSRX t_front_right = new WPI_TalonSRX(22);
+  private static final WPI_TalonSRX t_back_left   = new WPI_TalonSRX(23);
+  private static final WPI_TalonSRX t_back_right  = new WPI_TalonSRX(24);
+
+
+  // Control
+  private static final XboxController controller = new XboxController(0);
 
   SwerveDrive drive = new SwerveDrive(
       new SwerveController(m_front_left, t_front_left, e_front_left, 420),
