@@ -9,6 +9,7 @@ class SwerveController {
     private SpeedController turningMotor;
     private Encoder encoder;
     private int fullTurn;
+    private String name;
 
     /* A nice little untilty class to control your favorite swerve drive wheel
      * fullTurn should be the value of the encoder if the wheel makes a full 360
@@ -17,12 +18,15 @@ class SwerveController {
     public SwerveController(SpeedController driveMotor,
                             SpeedController turningMotor,
                             Encoder encoder,
-                            int fullTurn) {
+                            int fullTurn,
+                            String name) {
+
 
         this.driveMotor = driveMotor;
         this.turningMotor = turningMotor;
         this.encoder = encoder;
         this.fullTurn = fullTurn;
+        this.name = name;
     }
 
     void setSpeed(double speed) {
@@ -35,12 +39,24 @@ class SwerveController {
 
     void setTurnTo(double speed, int target) {
         speed = Math.abs(speed);
-        setTurn(speed * towards(encoder.get(), target, false));
+        int current = encoder.get();
+        int delta = target - current;
+        double coeff = 0.002 * Math.abs(delta);
+        coeff = Math.min(coeff, 1.0);
+        double out = coeff * speed * towards(current, target, false);
+        System.out.printf("[%s] current: %s, target: %s, turningAt: %s\n", name, current, target, out);
+        setTurn(coeff * speed * out);
     }
+    // void setTurnTo(double speed, int target) {
+        // 
+    // }
 
     void setTurnTo(double speed, double angle) {
+
         setTurnTo(speed, nearestTurn(angle));
+
     }
+
 
     static double towards(int source, int target, boolean inverted) {
         if (source == target) return 0.0;
