@@ -4,39 +4,6 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 
-class EncoderTo extends Thread {
-    int target;
-    SpeedController motor;
-    Encoder encoder;
-    boolean inverted;
-
-    EncoderTo(int target, SpeedController motor, Encoder encoder, boolean inverted) {
-        this.target = target;
-        this.motor = motor;
-        this.encoder = encoder;
-        this.inverted = inverted;
-    }
-
-    public void run() {
-        int encoderVal;
-        do {
-            encoderVal = encoder.get();
-            motor.set(towards(encoderVal, target, inverted));
-        } while (Math.abs(encoderVal - target) > 10);
-    }
-
-    static double towards(int source, int target, boolean inverted) {
-        if (source == target) return 0.0;
-        boolean out;
-        if (source < target) out = true;
-        else out = false;
-        if (inverted) out = !out;
-
-        if (out) return 1.0;
-        return -1.0;
-    }
-}
-
 public class SwerveDrive extends RobotDriveBase {
 
     SwerveController frontLeft;

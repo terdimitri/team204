@@ -127,9 +127,9 @@ public class Robot extends TimedRobot {
     double strafe = controller.getX(Hand.kLeft);
     double rotate = controller.getX(Hand.kRight);
 
-    if (forward < 0.15) forward = 0.0;
-    if (strafe < 0.15) strafe = 0.0;
-    if (rotate < 0.15) rotate = 0.0;
+    if (Math.abs(forward) < 0.15) forward = 0.0;
+    if (Math.abs(strafe) < 0.15) strafe = 0.0;
+    if (Math.abs(rotate) < 0.15) rotate = 0.0;
 
     SmartDashboard.putString("forward", "" + forward);
     SmartDashboard.putString("strafe", "" + strafe);
