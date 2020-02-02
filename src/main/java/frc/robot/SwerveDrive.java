@@ -68,6 +68,19 @@ public class SwerveDrive extends RobotDriveBase {
         assert -1.0 <= strafe && strafe <= 1 : "`strafe` value is out of bounds";
         assert -1.0 <= forward && forward <= 1 : "`forward` value is out of bounds";
 
+        if (forward == 0 && strafe == 0 && rotate == 0) {
+            frontLeft.setSpeed(0);
+            frontRight.setSpeed(0);
+            backLeft.setSpeed(0);
+            backRight.setSpeed(0);
+            frontLeft.setTurn(0);
+            frontRight.setTurn(0);
+            backLeft.setTurn(0);
+            backRight.setTurn(0);
+
+            return;
+        }
+
         double R = Math.sqrt(wheelbase*wheelbase + trackwidth*trackwidth);
 
         double a = strafe - rotate*wheelbase/R;
