@@ -3,39 +3,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.RobotDriveBase;
+import edu.wpi.first.wpilibj.drive.Vector2d;
 
-class EncoderTo extends Thread {
-    int target;
-    SpeedController motor;
-    Encoder encoder;
-    boolean inverted;
-
-    EncoderTo(int target, SpeedController motor, Encoder encoder, boolean inverted) {
-        this.target = target;
-        this.motor = motor;
-        this.encoder = encoder;
-        this.inverted = inverted;
-    }
-
-    public void run() {
-        int encoderVal;
-        do {
-            encoderVal = encoder.get();
-            motor.set(towards(encoderVal, target, inverted));
-        } while (Math.abs(encoderVal - target) > 10);
-    }
-
-    static double towards(int source, int target, boolean inverted) {
-        if (source == target) return 0.0;
-        boolean out;
-        if (source < target) out = true;
-        else out = false;
-        if (inverted) out = !out;
-
-        if (out) return 1.0;
-        return -1.0;
-    }
-}
 
 public class SwerveDrive extends RobotDriveBase {
 
@@ -64,10 +33,12 @@ public class SwerveDrive extends RobotDriveBase {
     // strafe is oriented rightwards and rotate is oriented clockwise
     void set(double forward, double strafe, double rotate) {
 
+        // assert good inputs
         assert -1.0 <= forward && forward <= 1 : "`forward` value is out of bounds";
         assert -1.0 <= strafe && strafe <= 1 : "`strafe` value is out of bounds";
         assert -1.0 <= forward && forward <= 1 : "`forward` value is out of bounds";
 
+        // do nothing case
         if (forward == 0 && strafe == 0 && rotate == 0) {
             frontLeft.setSpeed(0);
             frontRight.setSpeed(0);
@@ -81,30 +52,42 @@ public class SwerveDrive extends RobotDriveBase {
             return;
         }
 
-        double R = Math.sqrt(wheelbase*wheelbase + trackwidth*trackwidth);
+        // constants
+        final double R = Math.sqrt(trackwidth*trackwidth + wheelbase*wheelbase);
+        final double W = trackwidth/R;
+        final double L = wheelbase/R;
+        
+        // strafe vector
+        Vector2d deltafl = new Vector2d(forward, strafe);
+        Vector2d deltafr = new Vector2d(forward, strafe);
+        Vector2d deltabr = new Vector2d(forward, strafe);
+        Vector2d deltabl = new Vector2d(forward, strafe);
+        
+        // add rotation, iadd means inplace add
+        deltafl.iadd(Vector2d(-L, W));
+        deltafr.iadd(Vector2d(L, W));
+        deltabr.iadd(Vector2d(L, -W));
+        deltabl.iadd(Vector2d(-L, -W));
 
-        double a = strafe - rotate*wheelbase/R;
-        double b = strafe + rotate*wheelbase/R;
-        double c = forward - rotate*trackwidth/R;
-        double d = forward + rotate*trackwidth/R;
+        // set speeds and angles
+        speedfl = deltafl.getMagnitude();
+        speedfr = deltafr.getMagnitude();
+        speedbr = deltabr.getMagnitude();
+        speedbl = deltabl.getMagnitude();
+        anglefl = deltafl.getAngle();
+        anglefr = deltafr.getAngle();
+        anglebr = deltabr.getAngle();
+        anglebl = deltabl.getAngle();
 
-        double speedfr = Math.sqrt(b*b + c*c);
-        double anglefr = Math.atan2(b, c);
-        double speedfl = Math.sqrt(b*b + d*d);
-        double anglefl = Math.atan2(b, d);
-        double speedbr = Math.sqrt(a*a + d*d);
-        double anglebr = Math.atan2(a, d);
-        double speedbl = Math.sqrt(a*a + c*c);
-        double anglebl = Math.atan2(a, c);
+        double maxSpeed = Math.max(Math.max(speedfr, speedfl), Math.max(speedbr, speedbl));
 
-        double max = Math.max(Math.max(speedfr, speedfl), Math.max(speedbr, speedbl));
-
-        if (max > 1) {
-            speedfl /= max;
-            speedfr /= max;
-            speedbl /= max;
-            speedbr /= max;
+        if (maxSpeed > 1) {
+            speedfl /= maxSpeed;
+            speedfr /= maxSpeed;
+            speedbl /= maxSpeed;
+            speedbr /= maxSpeed;
         }
+
 
         frontLeft.setSpeed(speedfl);
         frontRight.setSpeed(speedfr);
