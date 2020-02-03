@@ -35,6 +35,9 @@
 *.app
 
 ### Java ###
+# Weird linter thing I dont get
+*.args
+
 # Compiled class file
 *.class
 
