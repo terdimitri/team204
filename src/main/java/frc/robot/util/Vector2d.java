@@ -39,6 +39,10 @@ public class Vector2d {
         return this.x * x + this.y * y;
     }
 
+    public void normalize() {
+        scale(1/getMagnitude());
+    }
+
     public void rotate(double angle) {
         this.x = this.dot(Math.cos(angle), -Math.sin(angle));
         this.y = this.dot(Math.sin(angle), Math.cos(angle));

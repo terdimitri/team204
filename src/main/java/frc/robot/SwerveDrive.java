@@ -87,6 +87,7 @@ public class SwerveDrive extends RobotDriveBase {
             speedbr /= maxSpeed;
         }
 
+        
 
         frontLeft.setSpeed(speedfl);
         frontRight.setSpeed(speedfr);
@@ -96,8 +97,16 @@ public class SwerveDrive extends RobotDriveBase {
     }
 
 
-    static int nearestEncoderVal(SwerveController controller, double targetAngle) {
+    static void turnTo(SwerveController controller, double targetAngle, double coeff) {
         int current = controller.getEncoderVal();
+        int targetVal = nearestEncoderVal(controller, current, targetAngle);
+        int delta = targetVal - current;
+        double speed = coeff * (double) delta;
+        speed = Math.copySign(Math.min(Math.abs(speed), 1), speed);
+        controller.setTurn(speed);
+    }
+
+    static int nearestEncoderVal(SwerveController controller, int current, double targetAngle) {
         int target = controller.toEncoder(targetAngle);
 
         int delta = (target - current) % (controller.fullTurn/2);
@@ -117,10 +126,6 @@ public class SwerveDrive extends RobotDriveBase {
 
     static int modDist(int source, int target, int modulo) {
         return Math.min((target-source) % modulo, (source-target) % modulo);
-    }
-
-    double angleDelta() {
-        return 0.0;
     }
 
     @Override
