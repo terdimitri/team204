@@ -1,10 +1,11 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.RobotDriveBase;
+import frc.robot.util.Vector2d;
 
 public class SwerveDrive extends RobotDriveBase {
+
+    final double angleTolerance = Math.PI/8;
 
     SwerveController frontLeft;
     SwerveController frontRight;
@@ -31,33 +32,59 @@ public class SwerveDrive extends RobotDriveBase {
     // strafe is oriented rightwards and rotate is oriented clockwise
     void set(double forward, double strafe, double rotate) {
 
+        // assert good inputs
         assert -1.0 <= forward && forward <= 1 : "`forward` value is out of bounds";
         assert -1.0 <= strafe && strafe <= 1 : "`strafe` value is out of bounds";
         assert -1.0 <= forward && forward <= 1 : "`forward` value is out of bounds";
 
-        double R = Math.sqrt(wheelbase*wheelbase + trackwidth*trackwidth);
+        // do nothing case
+        if (forward == 0 && strafe == 0 && rotate == 0) {
+            frontLeft.setSpeed(0);
+            frontRight.setSpeed(0);
+            backLeft.setSpeed(0);
+            backRight.setSpeed(0);
+            frontLeft.setTurn(0);
+            frontRight.setTurn(0);
+            backLeft.setTurn(0);
+            backRight.setTurn(0);
 
-        double a = strafe - rotate*wheelbase/R;
-        double b = strafe + rotate*wheelbase/R;
-        double c = forward - rotate*trackwidth/R;
-        double d = forward + rotate*trackwidth/R;
+            return;
+        }
 
-        double speedfr = Math.sqrt(b*b + c*c);
-        double anglefr = Math.atan2(b, c);
-        double speedfl = Math.sqrt(b*b + d*d);
-        double anglefl = Math.atan2(b, d);
-        double speedbr = Math.sqrt(a*a + d*d);
-        double anglebr = Math.atan2(a, d);
-        double speedbl = Math.sqrt(a*a + c*c);
-        double anglebl = Math.atan2(a, c);
+        // constants
+        final double R = Math.sqrt(trackwidth*trackwidth + wheelbase*wheelbase);
+        final double W = trackwidth/R;
+        final double L = wheelbase/R;
+        
+        // strafe vector
+        Vector2d deltafl = new Vector2d(forward, strafe);
+        Vector2d deltafr = new Vector2d(forward, strafe);
+        Vector2d deltabr = new Vector2d(forward, strafe);
+        Vector2d deltabl = new Vector2d(forward, strafe);
+        
+        // add rotation, iadd means inplace add
+        deltafl.iadd(new Vector2d(-L, W));
+        deltafr.iadd(new Vector2d(L, W));
+        deltabr.iadd(new Vector2d(L, -W));
+        deltabl.iadd(new Vector2d(-L, -W));
 
-        double max = Math.max(Math.max(speedfr, speedfl), Math.max(speedbr, speedbl));
+        // set speeds and angles
+        double speedfl = deltafl.getMagnitude();
+        double speedfr = deltafr.getMagnitude();
+        double speedbr = deltabr.getMagnitude();
+        double speedbl = deltabl.getMagnitude();
+        double anglefl = deltafl.getAngle();
+        double anglefr = deltafr.getAngle();
+        double anglebr = deltabr.getAngle();
+        double anglebl = deltabl.getAngle();
 
-        if (max > 1) {
-            speedfl /= max;
-            speedfr /= max;
-            speedbl /= max;
-            speedbr /= max;
+        double maxSpeed = Math.max(Math.max(speedfr, speedfl), Math.max(speedbr, speedbl));
+
+        if (maxSpeed > 1) {
+            speedfl /= maxSpeed;
+            speedfr /= maxSpeed;
+            speedbl /= maxSpeed;
+            speedbr /= maxSpeed;
         }
 
 
@@ -66,10 +93,34 @@ public class SwerveDrive extends RobotDriveBase {
         backRight.setSpeed(speedbl);
         backLeft.setSpeed(speedbr);
 
-        frontLeft.setTurnTo(1.0, anglefl);
-        frontRight.setTurnTo(1.0, anglefr);
-        backRight.setTurnTo(1.0, anglebl);
-        backLeft.setTurnTo(1.0, anglebr);
+    }
+
+
+    static int nearestEncoderVal(SwerveController controller, double targetAngle) {
+        int current = controller.getEncoderVal();
+        int target = controller.toEncoder(targetAngle);
+
+        int delta = (target - current) % (controller.fullTurn/2);
+        if (Math.abs(delta - controller.fullTurn/2) < delta)
+            delta -= controller.fullTurn/2;
+
+        return current + delta;
+    }
+
+    static boolean isReversed(SwerveController controller, int encoderVal, double angle) {
+        int target = controller.toEncoder(angle);
+        int hereDist = modDist(encoderVal, target, controller.fullTurn);
+        int thereDist = modDist(encoderVal, target + controller.fullTurn/2, controller.fullTurn);
+
+        return thereDist < hereDist;
+    }
+
+    static int modDist(int source, int target, int modulo) {
+        return Math.min((target-source) % modulo, (source-target) % modulo);
+    }
+
+    double angleDelta() {
+        return 0.0;
     }
 
     @Override

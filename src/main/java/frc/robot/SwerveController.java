@@ -8,8 +8,8 @@ class SwerveController {
     private SpeedController driveMotor;
     private SpeedController turningMotor;
     private Encoder encoder;
-    private int fullTurn;
-    private String name;
+    int fullTurn;
+    String name;
 
     /* A nice little untilty class to control your favorite swerve drive wheel
      * fullTurn should be the value of the encoder if the wheel makes a full 360
@@ -37,37 +37,40 @@ class SwerveController {
         turningMotor.set(speed);
     }
 
-    void setTurnTo(double speed, int target) {
-        speed = Math.abs(speed);
-        int current = encoder.get();
-        int delta = target - current;
-        double coeff = 0.002 * Math.abs(delta);
-        coeff = Math.min(coeff, 1.0);
-        double out = coeff * speed * towards(current, target, false);
-        System.out.printf("[%s] current: %s, target: %s, turningAt: %s\n", name, current, target, out);
-        setTurn(coeff * speed * out);
+    int getEncoderVal() {
+        return encoder.get();
     }
     // void setTurnTo(double speed, int target) {
         // 
     // }
 
-    void setTurnTo(double speed, double angle) {
-
-        setTurnTo(speed, nearestTurn(angle));
-
+    int toEncoder(double angle) {
+        return (int) (angle/Math.PI/2*fullTurn);
     }
 
-
-    static double towards(int source, int target, boolean inverted) {
-        if (source == target) return 0.0;
-        boolean out;
-        if (source < target) out = true;
-        else out = false;
-        if (inverted) out = !out;
-
-        if (out) return 1.0;
-        return -1.0;
+    double toAngle(int encoderVal) {
+        return ((double) encoderVal) /fullTurn*Math.PI*2;
     }
+
+    // void setTurnTo(double speed, int target) {
+    //     speed = Math.abs(speed);
+    //     setTurn(speed * towards(encoder.get(), target, false));
+    // }
+
+    // void setTurnTo(double speed, double angle) {
+    //     setTurnTo(speed, nearestTurn(angle));
+    // }
+
+    // static double towards(int source, int target, boolean inverted) {
+    //     if (source == target) return 0.0;
+    //     boolean out;
+    //     if (source < target) out = true;
+    //     else out = false;
+    //     if (inverted) out = !out;
+
+    //     if (out) return 1.0;
+    //     return -1.0;
+    // }
 
     void stopMotor() {
         driveMotor.set(0.0);
@@ -79,15 +82,15 @@ class SwerveController {
         turningMotor.disable();
     }
 
-    /* Utility function, return the would-be value of the encoder if it turned to
-     * the target angle (in radians) minimizing the turning angle.
-     */
-    int nearestTurn(double theta) {
-        int current = encoder.get();
-        int target = (int) (theta / 2 / Math.PI * fullTurn);
-        int delta = (target - current) % fullTurn;
-        if (fullTurn - delta < delta) delta -= fullTurn;
-        return current + delta;
-    }
+    // /* Utility function, return the would-be value of the encoder if it turned to
+    //  * the target angle (in radians) minimizing the turning angle.
+    //  */
+    // int nearestTurn(double theta) {
+    //     int current = encoder.get();
+    //     int target = (int) (theta / 2 / Math.PI * fullTurn);
+    //     int delta = (target - current) % fullTurn;
+    //     if (fullTurn - delta < delta) delta -= fullTurn;
+    //     return current + delta;
+    // }
     
 }
