@@ -87,15 +87,28 @@ public class SwerveDrive extends RobotDriveBase {
             speedbr /= maxSpeed;
         }
 
-        
+        turnTo(frontLeft, anglefl, 0.02);
+        turnTo(frontRight, anglefr, 0.02);
+        turnTo(backRight, anglebr, 0.02);
+        turnTo(backLeft, anglebl, 0.02);
 
-        frontLeft.setSpeed(speedfl);
-        frontRight.setSpeed(speedfr);
-        backRight.setSpeed(speedbl);
-        backLeft.setSpeed(speedbr);
+        double maxAngleError = angleError(frontLeft, anglefl);
+        maxAngleError = Math.max(angleError(frontRight, anglefr), maxAngleError);
+        maxAngleError = Math.max(angleError(backRight, anglebr), maxAngleError);
+        maxAngleError = Math.max(angleError(backLeft, anglebl), maxAngleError);
 
+        if (maxAngleError < angleTolerance) {
+            frontLeft.setSpeed(speedfl);
+            frontRight.setSpeed(speedfr);
+            backRight.setSpeed(speedbl);
+            backLeft.setSpeed(speedbr);
+        } else {
+            frontLeft.setSpeed(0);
+            frontRight.setSpeed(0);
+            backRight.setSpeed(0);
+            backLeft.setSpeed(0);
+        }
     }
-
 
     static void turnTo(SwerveController controller, double targetAngle, double coeff) {
         int current = controller.getEncoderVal();
@@ -122,6 +135,10 @@ public class SwerveDrive extends RobotDriveBase {
         int thereDist = modDist(encoderVal, target + controller.fullTurn/2, controller.fullTurn);
 
         return thereDist < hereDist;
+    }
+
+    static double angleError(SwerveController controller, double targetAngle) {
+        return modDist(controller.toEncoder(targetAngle), controller.getEncoderVal(), controller.fullTurn/2);
     }
 
     static int modDist(int source, int target, int modulo) {
