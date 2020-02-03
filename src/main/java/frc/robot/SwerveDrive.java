@@ -29,13 +29,13 @@ public class SwerveDrive extends RobotDriveBase {
     }
 
     // All parameters from -1 to 1, as in joystick values
-    // strafe is oriented rightwards and rotate is oriented clockwise
+    // strafe is oriented leftwards and rotate is oriented counter-clockwise
     void set(double forward, double strafe, double rotate) {
 
         // assert good inputs
         assert -1.0 <= forward && forward <= 1 : "`forward` value is out of bounds";
         assert -1.0 <= strafe && strafe <= 1 : "`strafe` value is out of bounds";
-        assert -1.0 <= forward && forward <= 1 : "`forward` value is out of bounds";
+        assert -1.0 <= rotate && rotate <= 1 : "`rotate` value is out of bounds";
 
         // do nothing case
         if (forward == 0 && strafe == 0 && rotate == 0) {
@@ -43,6 +43,7 @@ public class SwerveDrive extends RobotDriveBase {
             frontRight.setSpeed(0);
             backLeft.setSpeed(0);
             backRight.setSpeed(0);
+
             frontLeft.setTurn(0);
             frontRight.setTurn(0);
             backLeft.setTurn(0);
@@ -63,10 +64,10 @@ public class SwerveDrive extends RobotDriveBase {
         Vector2d deltabl = new Vector2d(forward, strafe);
         
         // add rotation, iadd means inplace add
-        deltafl.iadd(new Vector2d(-L, W));
-        deltafr.iadd(new Vector2d(L, W));
-        deltabr.iadd(new Vector2d(L, -W));
-        deltabl.iadd(new Vector2d(-L, -W));
+        deltafl.iadd(new Vector2d(-W, L));
+        deltafr.iadd(new Vector2d(W, L));
+        deltabr.iadd(new Vector2d(W, -L));
+        deltabl.iadd(new Vector2d(-W, -L));
 
         // set speeds and angles
         double speedfl = deltafl.getMagnitude();
