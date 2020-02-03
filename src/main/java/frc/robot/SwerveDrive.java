@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.drive.Vector2d;
 
 public class SwerveDrive extends RobotDriveBase {
 
+    final double angleTolerance = Math.PI/8;
+
     SwerveController frontLeft;
     SwerveController frontRight;
     SwerveController backLeft;
@@ -98,6 +100,30 @@ public class SwerveDrive extends RobotDriveBase {
         frontRight.setTurnTo(1.0, anglefr);
         backRight.setTurnTo(1.0, anglebl);
         backLeft.setTurnTo(1.0, anglebr);
+    }
+
+
+    static int nearestEncoderVal(SwerveController controller, double targetAngle) {
+        int current = controller.getEncoderVal();
+        target = controller.toEncoder(targetAngle);
+
+        int delta = (target - current) % (fullTurn/2)
+        if (Math.abs(delta - fullTurn/2) < delta)
+            delta -= fullTurn/2;
+
+        return current + delta;
+    }
+
+    static boolean isReversed(SwerveController controller, int encoderVal, double angle) {
+        controller.toEncoder(double angle);
+    }
+
+    static int modDist(int source, int target, int modulo) {
+        return Math.min((target-source) % modulo, (source-target) % modulo);
+    }
+
+    double angleDelta() {
+        return 0.0;
     }
 
     @Override
