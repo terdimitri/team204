@@ -5,7 +5,7 @@ import frc.robot.util.Vector2d;
 
 public class SwerveDrive extends RobotDriveBase {
 
-    final double angleTolerance = Math.PI/8;
+    final double angleTolerance = Math.PI/18;
 
     SwerveController frontLeft;
     SwerveController frontRight;
@@ -81,7 +81,7 @@ public class SwerveDrive extends RobotDriveBase {
 
         double maxSpeed = Math.max(Math.max(speedfr, speedfl), Math.max(speedbr, speedbl));
 
-        if (maxSpeed > 1) {
+        if (maxSpeed >= 1) {
             speedfl /= maxSpeed;
             speedfr /= maxSpeed;
             speedbl /= maxSpeed;
@@ -101,8 +101,8 @@ public class SwerveDrive extends RobotDriveBase {
         if (maxAngleError < angleTolerance) {
             frontLeft.setSpeed(speedfl);
             frontRight.setSpeed(speedfr);
-            backRight.setSpeed(speedbl);
-            backLeft.setSpeed(speedbr);
+            backRight.setSpeed(speedbr);
+            backLeft.setSpeed(speedbl);
         } else {
             frontLeft.setSpeed(0);
             frontRight.setSpeed(0);
@@ -121,6 +121,7 @@ public class SwerveDrive extends RobotDriveBase {
     }
 
     static int nearestEncoderVal(SwerveController controller, int current, double targetAngle) {
+        // stuff
         int target = controller.toEncoder(targetAngle);
 
         int delta = (target - current) % (controller.fullTurn/2);

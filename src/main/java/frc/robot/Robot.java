@@ -46,10 +46,10 @@ public class Robot extends TimedRobot {
   private static final XboxController controller = new XboxController(0);
 
   private static final SwerveDrive drive = new SwerveDrive(
-      new SwerveController(m_front_left, t_front_left, e_front_left, 420, "frontLeft"),
-      new SwerveController(m_front_right, t_front_right, e_front_right, 420, "frontRight"),
-      new SwerveController(m_back_left, t_back_left, e_back_left, 420,  "backLeft"),
-      new SwerveController(m_back_right, t_back_right, e_back_right, 420, "backRight"),
+      new SwerveController(m_front_left, t_front_left, e_front_left, 415, "frontLeft"),
+      new SwerveController(m_front_right, t_front_right, e_front_right, 415, "frontRight"),
+      new SwerveController(m_back_left, t_back_left, e_back_left, 415,  "backLeft"),
+      new SwerveController(m_back_right, t_back_right, e_back_right, 415, "backRight"),
       20, 25.5);
 
   /**
@@ -127,7 +127,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putString("rotate", "" + rotate);
 
     
-    drive.set(-forward, strafe, rotate);
+    drive.set(-forward, -strafe, -rotate);
   }
 
   /**
