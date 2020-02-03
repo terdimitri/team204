@@ -115,7 +115,11 @@ public class SwerveDrive extends RobotDriveBase {
     }
 
     static boolean isReversed(SwerveController controller, int encoderVal, double angle) {
-        controller.toEncoder(double angle);
+        int target = controller.toEncoder(double angle);
+        int hereDist = modDist(encoderVal, target, fullTurn);
+        int thereDist = modDist(encoderVal, target + fullTurn/2, fullTurn);
+
+        return thereDist < hereDist;
     }
 
     static int modDist(int source, int target, int modulo) {
