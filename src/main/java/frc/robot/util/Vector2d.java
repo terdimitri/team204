@@ -1,6 +1,6 @@
 package frc.robot.util;
 
-class Vector2d {
+public class Vector2d {
     double x, y;
     public Vector2d() {
         this.x = 0;
@@ -11,44 +11,44 @@ class Vector2d {
         this.y = y;
     }
 
-    Vector2d scale(double k) {
+    public void scale(double k) {
         this.x *= k;
         this.y *= k;
     }
 
-    void iadd(Vector2d other) {
+    public void iadd(Vector2d other) {
         this.x += other.x;
         this.y += other.y;
     }
-    Vector2d add(Vector2d other) {
-        return Vector2d(this.x + other.x, this.y + other.y);
+    public Vector2d add(Vector2d other) {
+        return new Vector2d(this.x + other.x, this.y + other.y);
     }
 
-    void isub(Vector2d other) {
+    public void isub(Vector2d other) {
         this.x -= other.x;
         this.y -= other.y;
     }
-    Vector2d sub(Vector2d other) {
-        return Vector2d(this.x - other.x, this.y - other.y);
+    public Vector2d sub(Vector2d other) {
+        return new Vector2d(this.x - other.x, this.y - other.y);
     }
 
-    double dot(Vector2d other) {
+    public double dot(Vector2d other) {
         return this.x * other.x + this.y * other.y;
     }
-    double dot(double x, double y) {
+    public double dot(double x, double y) {
         return this.x * x + this.y * y;
     }
 
-    void rotate(double angle) {
+    public void rotate(double angle) {
         this.x = this.dot(Math.cos(angle), -Math.sin(angle));
         this.y = this.dot(Math.sin(angle), Math.cos(angle));
     }
 
-    double getMagnitude() {
+    public double getMagnitude() {
         return Math.sqrt(x*x + y*y);
     }
 
-    double getAngle() {
+    public double getAngle() {
         return Math.atan2(x, y);
     }
 }

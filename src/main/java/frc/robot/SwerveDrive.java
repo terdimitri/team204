@@ -3,7 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.RobotDriveBase;
-import edu.wpi.first.wpilibj.drive.Vector2d;
+import frc.robot.util.Vector2d;
 
 
 public class SwerveDrive extends RobotDriveBase {
@@ -66,20 +66,20 @@ public class SwerveDrive extends RobotDriveBase {
         Vector2d deltabl = new Vector2d(forward, strafe);
         
         // add rotation, iadd means inplace add
-        deltafl.iadd(Vector2d(-L, W));
-        deltafr.iadd(Vector2d(L, W));
-        deltabr.iadd(Vector2d(L, -W));
-        deltabl.iadd(Vector2d(-L, -W));
+        deltafl.iadd(new Vector2d(-L, W));
+        deltafr.iadd(new Vector2d(L, W));
+        deltabr.iadd(new Vector2d(L, -W));
+        deltabl.iadd(new Vector2d(-L, -W));
 
         // set speeds and angles
-        speedfl = deltafl.getMagnitude();
-        speedfr = deltafr.getMagnitude();
-        speedbr = deltabr.getMagnitude();
-        speedbl = deltabl.getMagnitude();
-        anglefl = deltafl.getAngle();
-        anglefr = deltafr.getAngle();
-        anglebr = deltabr.getAngle();
-        anglebl = deltabl.getAngle();
+        double speedfl = deltafl.getMagnitude();
+        double speedfr = deltafr.getMagnitude();
+        double speedbr = deltabr.getMagnitude();
+        double speedbl = deltabl.getMagnitude();
+        double anglefl = deltafl.getAngle();
+        double anglefr = deltafr.getAngle();
+        double anglebr = deltabr.getAngle();
+        double anglebl = deltabl.getAngle();
 
         double maxSpeed = Math.max(Math.max(speedfr, speedfl), Math.max(speedbr, speedbl));
 
@@ -96,26 +96,22 @@ public class SwerveDrive extends RobotDriveBase {
         backRight.setSpeed(speedbl);
         backLeft.setSpeed(speedbr);
 
-        frontLeft.setTurnTo(1.0, anglefl);
-        frontRight.setTurnTo(1.0, anglefr);
-        backRight.setTurnTo(1.0, anglebl);
-        backLeft.setTurnTo(1.0, anglebr);
     }
 
 
     static int nearestEncoderVal(SwerveController controller, double targetAngle) {
         int current = controller.getEncoderVal();
-        target = controller.toEncoder(targetAngle);
+        int target = controller.toEncoder(targetAngle);
 
-        int delta = (target - current) % (fullTurn/2)
-        if (Math.abs(delta - fullTurn/2) < delta)
-            delta -= fullTurn/2;
+        int delta = (target - current) % (controller.fullTurn/2);
+        if (Math.abs(delta - controller.fullTurn/2) < delta)
+            delta -= controller.fullTurn/2;
 
         return current + delta;
     }
 
     static boolean isReversed(SwerveController controller, int encoderVal, double angle) {
-        controller.toEncoder(double angle);
+        controller.toEncoder(angle);
     }
 
     static int modDist(int source, int target, int modulo) {

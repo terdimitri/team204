@@ -38,11 +38,11 @@ class SwerveController {
     }
 
     int toEncoder(double angle) {
-        return angle/Math.PI/2*fullTurn;
+        return (int) (angle/Math.PI/2*fullTurn);
     }
 
-    int toAngle(int encoderVal) {
-        return ((double) encoderVal) /fullTurn*Math.PI*2);
+    double toAngle(int encoderVal) {
+        return ((double) encoderVal) /fullTurn*Math.PI*2;
     }
 
     // void setTurnTo(double speed, int target) {
