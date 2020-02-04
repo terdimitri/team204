@@ -121,7 +121,6 @@ public class SwerveDrive extends RobotDriveBase {
     }
 
     static int nearestEncoderVal(SwerveController controller, int current, double targetAngle) {
-        // stuff
         int target = controller.toEncoder(targetAngle);
 
         int delta = (target - current) % (controller.fullTurn/2);
